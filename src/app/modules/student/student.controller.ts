@@ -1,18 +1,38 @@
 import { Request, Response } from "express";
 import { studentService } from "./student.service";
+import Joi from "joi";
+import studentValidationSchema from "./student.validation";
 
 const createStudent = async (req: Request, res: Response) => {
   try {
+    // creating Validation using joi..
+
+    // Define the Joi schema for the nested objects first
+
     const { student: studentData } = req.body;
 
+    const { error } = studentValidationSchema.validate(studentData);
     const result = await studentService.createStudentIntoDB(studentData);
+
+    if (error) {
+      res.status(500).json({
+        success: false,
+        message: "Something went Wrong!",
+        error: error.details,
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "Student Created Successfully!",
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Something went Wrong!",
+      error: err,
+    });
   }
 };
 
@@ -34,7 +54,7 @@ const getSingleStudent = async (req: Request, res: Response) => {
     const result = await studentService.getSingleStudent(studentId);
     res.status(200).json({
       success: true,
-      message: "Students is retrieved Successfully!",
+      message: "Student is retrieved Successfully!",
       data: result,
     });
   } catch (err) {
