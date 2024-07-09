@@ -1,42 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { studentService } from "./student.service";
-import Joi from "joi";
-import studentValidationSchema from "./student.validation";
 
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    // creating Validation using joi..
-
-    // Define the Joi schema for the nested objects first
-
-    const { student: studentData } = req.body;
-
-    const { error } = studentValidationSchema.validate(studentData);
-    const result = await studentService.createStudentIntoDB(studentData);
-
-    if (error) {
-      res.status(500).json({
-        success: false,
-        message: "Something went Wrong!",
-        error: error.details,
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Student Created Successfully!",
-      data: result,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Something went Wrong!",
-      error: err,
-    });
-  }
-};
-
-const getAllStudents = async (req: Request, res: Response) => {
+const getAllStudents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const result = await studentService.getAllStudentsFromDB();
     res.status(200).json({
@@ -45,10 +14,14 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
-const getSingleStudent = async (req: Request, res: Response) => {
+const getSingleStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { studentId } = req.params;
     const result = await studentService.getSingleStudent(studentId);
@@ -58,12 +31,11 @@ const getSingleStudent = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 
 export const StudentControllers = {
-  createStudent,
   getAllStudents,
   getSingleStudent,
 };

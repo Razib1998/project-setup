@@ -2,27 +2,19 @@ import { Schema, model } from "mongoose";
 import validator from "validator";
 
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  StudentName,
-} from "./student/student.interface";
+  TStudent,
+  StudentMethods,
+  StudentModel,
+  TStudentName,
+  TLocalGuardian,
+  TGuardian,
+} from "./student.interface";
 
-const studentNameSchema = new Schema<StudentName>({
+const studentNameSchema = new Schema<TStudentName>({
   firstName: {
     type: String,
     trim: true,
     maxlength: [20, "First Name can not be more than 20 characters"],
-
-    // Customize validator for first Name..
-
-    // validate: {
-    //   validator: function (value: string) {
-    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
-    //     return firstNameStr === value;
-    //   },
-    //   message: "{VALUE} is not capitalize format",
-    // },
     required: [true, "First Name field is required"],
   },
   middleName: { type: String },
@@ -39,7 +31,7 @@ const studentNameSchema = new Schema<StudentName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: [true, "Father Name field is required"],
@@ -66,7 +58,7 @@ const guardianSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, required: [true, "Name field is required"] },
   occupation: {
     type: String,
@@ -75,8 +67,14 @@ const localGuardianSchema = new Schema<LocalGuardian>({
   contactNo: { type: String, required: [true, "Name field is required"] },
 });
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   id: { type: String, required: true, unique: true },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, "User id is required"],
+    unique: true,
+    ref: "User",
+  },
   name: {
     type: studentNameSchema,
     required: [true, "Name field is required"],
@@ -130,11 +128,6 @@ const studentSchema = new Schema<Student>({
     required: [true, "Local guardian field is required"],
   },
   profileImg: { type: String },
-  isActive: {
-    type: String,
-    enum: ["Active", "unActive"],
-    default: "Active",
-  },
 });
 
-export const StudentModel = model<Student>("Student", studentSchema);
+export const Student = model<TStudent, StudentModel>("Student", studentSchema);

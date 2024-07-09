@@ -4,8 +4,6 @@ import { StudentControllers } from "./student.controller";
 const router = express.Router();
 
 // This function will call the controller..
-
-router.post("/create-student", StudentControllers.createStudent);
 router.get("/", StudentControllers.getAllStudents);
 router.get("/:studentId", StudentControllers.getSingleStudent);
 
