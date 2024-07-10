@@ -1,11 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { RequestHandler } from "express";
 import { UserServices } from "./user.service";
+import sendResponse from "../../utils/senResponse";
+import httpStatus from "http-status";
 
-const createStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const createStudent: RequestHandler = async (req, res, next) => {
   try {
     const { password, student: studentData } = req.body;
     // const zodParseData = studentValidationZodSchema.parse(studentData);
@@ -13,9 +11,16 @@ const createStudent = async (
       password,
       studentData
     );
-    res.status(200).json({
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Student Created Successfully!",
+    //   data: result,
+    // });
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: "Student Created Successfully!",
+      message: "Student Created Successfully",
       data: result,
     });
   } catch (err) {
