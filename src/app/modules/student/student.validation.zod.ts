@@ -37,7 +37,7 @@ const studentValidationZodSchema = z.object({
             "The gender field can only be one of the following: 'male', 'female', 'other'",
         }),
       }),
-      dateOfBirth: z.string().optional(),
+      dateOfBirth: z.date().optional(),
       email: z.string().email("Email is not the correct format"),
       contactNo: z.string(),
       emergencyContactNo: z.string(),
