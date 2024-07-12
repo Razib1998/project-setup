@@ -27,27 +27,30 @@ const localGuardianSchema = z.object({
 
 // Define the main Zod schema for the student
 const studentValidationZodSchema = z.object({
-  id: z.string(),
-  name: studentNameSchema,
-  gender: z.enum(["male", "female", "other"], {
-    errorMap: () => ({
-      message:
-        "The gender field can only be one of the following: 'male', 'female', 'other'",
+  body: z.object({
+    password: z.string().max(20),
+    student: z.object({
+      name: studentNameSchema,
+      gender: z.enum(["male", "female", "other"], {
+        errorMap: () => ({
+          message:
+            "The gender field can only be one of the following: 'male', 'female', 'other'",
+        }),
+      }),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email("Email is not the correct format"),
+      contactNo: z.string(),
+      emergencyContactNo: z.string(),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+        .optional(),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      guardian: guardianSchema,
+      localGuardian: localGuardianSchema,
+      profileImg: z.string().optional(),
     }),
   }),
-  dateOfBirth: z.string().optional(),
-  email: z.string().email("Email is not the correct format"),
-  contactNo: z.string(),
-  emergencyContactNo: z.string(),
-  bloodGroup: z
-    .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-    .optional(),
-  presentAddress: z.string(),
-  permanentAddress: z.string(),
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
-  profileImg: z.string().optional(),
-  isActive: z.enum(["Active", "unActive"]).default("Active"),
 });
 
-export default studentValidationZodSchema;
+export const studentValidations = { studentValidationZodSchema };

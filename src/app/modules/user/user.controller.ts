@@ -2,31 +2,20 @@ import { RequestHandler } from "express";
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/senResponse";
 import httpStatus from "http-status";
+import catchAsync from "../../utils/catchAsync";
 
-const createStudent: RequestHandler = async (req, res, next) => {
-  try {
-    const { password, student: studentData } = req.body;
-    // const zodParseData = studentValidationZodSchema.parse(studentData);
-    const result = await UserServices.createStudentIntoDB(
-      password,
-      studentData
-    );
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Student Created Successfully!",
-    //   data: result,
-    // });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
+  const { password, student: studentData } = req.body;
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Student Created Successfully",
-      data: result,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+  const result = await UserServices.createStudentIntoDB(password, studentData);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student Created Successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createStudent,
