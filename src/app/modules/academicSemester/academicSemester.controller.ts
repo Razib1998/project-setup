@@ -13,7 +13,28 @@ const createAcademicSemester = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getAllSemesters = catchAsync(async (req, res) => {
+  const result = await AcademicSemesterServices.getAllSemesters();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All semester find  Successfully",
+    data: result,
+  });
+});
+const getSemesterById = catchAsync(async (req, res) => {
+  const { semesterId } = req.params;
+  const result = await AcademicSemesterServices.getSemesterById(semesterId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All semester find  Successfully",
+    data: result,
+  });
+});
 
 export const AcademicSemesterControllers = {
   createAcademicSemester,
+  getAllSemesters,
+  getSemesterById,
 };
