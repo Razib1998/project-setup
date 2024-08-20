@@ -28,7 +28,7 @@ const getSemesterById = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "All semester find  Successfully",
+    message: "Find a single semester using id+q3 Successfully",
     data: result,
   });
 });
