@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Define the Zod schema for the nested objects first
-const studentNameSchema = z.object({
+const studentNameValidationSchema = z.object({
   firstName: z
     .string()
     .trim()
@@ -10,7 +10,7 @@ const studentNameSchema = z.object({
   lastName: z.string().trim(),
 });
 
-const guardianSchema = z.object({
+const guardianValidationSchema = z.object({
   fatherName: z.string(),
   fatherOccupation: z.string(),
   fatherContactNo: z.string(),
@@ -26,18 +26,18 @@ const localGuardianSchema = z.object({
 });
 
 // Define the main Zod schema for the student
-const studentValidationZodSchema = z.object({
+const createStudentValidationSchema = z.object({
   body: z.object({
     password: z.string().max(20),
     student: z.object({
-      name: studentNameSchema,
+      name: studentNameValidationSchema,
       gender: z.enum(["male", "female", "other"], {
         errorMap: () => ({
           message:
             "The gender field can only be one of the following: 'male', 'female', 'other'",
         }),
       }),
-      dateOfBirth: z.date().optional(),
+      dateOfBirth: z.string().optional(),
       email: z.string().email("Email is not the correct format"),
       contactNo: z.string(),
       emergencyContactNo: z.string(),
@@ -46,7 +46,7 @@ const studentValidationZodSchema = z.object({
         .optional(),
       presentAddress: z.string(),
       permanentAddress: z.string(),
-      guardian: guardianSchema,
+      guardian: guardianValidationSchema,
       localGuardian: localGuardianSchema,
       admissionSemester: z.string(),
       profileImg: z.string().optional(),
@@ -54,4 +54,4 @@ const studentValidationZodSchema = z.object({
   }),
 });
 
-export const studentValidations = { studentValidationZodSchema };
+export const studentValidations = { createStudentValidationSchema };

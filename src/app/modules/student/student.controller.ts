@@ -25,7 +25,19 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const deleteStudent: RequestHandler = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const result = await studentService.deleteStudent(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student deleted Successfully!",
+    data: result,
+  });
+});
 export const StudentControllers = {
   getAllStudents,
   getSingleStudent,
+  deleteStudent,
 };

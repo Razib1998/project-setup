@@ -6,7 +6,7 @@ import {
 } from "./academicSemester.constant";
 
 // Define the main Zod schema for the student
-const academicSemesterValidationSchema = z.object({
+const createAcademicSemesterValidationSchema = z.object({
   body: z.object({
     name: z.enum([...(AcademicSemesterName as [string, ...string[]])]),
     year: z.string(),
@@ -15,5 +15,19 @@ const academicSemesterValidationSchema = z.object({
     endMonth: z.enum([...Months] as [string, ...string[]]),
   }),
 });
+const updateAcademicSemesterValidationSchema = z.object({
+  body: z.object({
+    name: z
+      .enum([...(AcademicSemesterName as [string, ...string[]])])
+      .optional(),
+    year: z.string().optional(),
+    code: z.enum([...AcademicSemesterCode] as [string, ...string[]]).optional(),
+    startMonth: z.enum([...Months] as [string, ...string[]]).optional(),
+    endMonth: z.enum([...Months] as [string, ...string[]]).optional(),
+  }),
+});
 
-export const academicSemesterValidations = { academicSemesterValidationSchema };
+export const academicSemesterValidations = {
+  createAcademicSemesterValidationSchema,
+  updateAcademicSemesterValidationSchema,
+};
