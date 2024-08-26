@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { RequestHandler } from "express";
 import { UserServices } from "./user.service";
 import sendResponse from "../../utils/senResponse";
@@ -16,7 +17,29 @@ const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const getAllUsers: RequestHandler = catchAsync(async (req, res, next) => {
+  const result = await UserServices.getAllUsersFromDB;
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All users are Retrieved Successfully",
+    data: result,
+  });
+});
+const getSingleUser: RequestHandler = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const result = await UserServices.getSingUserFromDB(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "single user retrieved Successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createStudent,
+  getAllUsers,
+  getSingleUser,
 };
