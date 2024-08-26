@@ -3,7 +3,7 @@ import { TAcademicDepartment } from "./academicDepartment.interface";
 
 const academicDepartmentSchema = new Schema(
   {
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
     academicFaculty: { type: Schema.Types.ObjectId, ref: "AcademicFaculty" },
   },
   { timestamps: true }
@@ -16,6 +16,18 @@ academicDepartmentSchema.pre("save", async function (next) {
   });
   if (isDepartmentExist) {
     throw new Error("This department is already exists!!");
+  }
+  next();
+});
+
+// When updating the academic semester we have to check the is the department
+// is exist or not....
+
+academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
+  const query = this.getQuery();
+  const isDepartmentExist = await AcademicDepartment.findOne(query);
+  if (!isDepartmentExist) {
+    throw new Error("This department does not exist!!!");
   }
   next();
 });
