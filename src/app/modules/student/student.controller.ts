@@ -27,8 +27,8 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res, next) => {
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const deleteStudent: RequestHandler = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const result = await studentService.deleteStudent(id);
+  const { studentId } = req.params;
+  const result = await studentService.deleteStudent(studentId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
