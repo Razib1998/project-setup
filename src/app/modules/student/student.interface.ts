@@ -41,6 +41,7 @@ export type TStudent = {
   profileImg?: string;
 };
 
+// For Creating static method
 export type StudentMethods = {
   isUserExists(id: string): Promise<TStudent | null>;
 };

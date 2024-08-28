@@ -67,76 +67,92 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   contactNo: { type: String, required: [true, "Name field is required"] },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
-  id: { type: String, required: true, unique: true },
-  user: {
-    type: Schema.Types.ObjectId,
-    required: [true, "User id is required"],
-    unique: true,
-    ref: "User",
-  },
-  name: {
-    type: studentNameSchema,
-    required: [true, "Name field is required"],
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ["male", "female", "other"],
-      message:
-        "The gender field can only be one of the following:'male','female','other'",
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>(
+  {
+    id: { type: String, required: true, unique: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, "User id is required"],
+      unique: true,
+      ref: "User",
     },
-    required: [true, "Gender field is required"],
-  },
-  dateOfBirth: { type: Date },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, "Email field is required"],
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: "{VALUE} is not correct email format",
+    name: {
+      type: studentNameSchema,
+      required: [true, "Name field is required"],
     },
-  },
-  contactNo: { type: String, required: [true, "Contact No field is required"] },
-  emergencyContactNo: {
-    type: String,
-    required: [true, "Emergency Contact no field is required"],
-  },
-  bloodGroup: {
-    type: String,
-    enum: {
-      values: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-      message:
-        'The gender field can only be one of the following:"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"',
+    gender: {
+      type: String,
+      enum: {
+        values: ["male", "female", "other"],
+        message:
+          "The gender field can only be one of the following:'male','female','other'",
+      },
+      required: [true, "Gender field is required"],
     },
+    dateOfBirth: { type: Date },
+    email: {
+      type: String,
+      unique: true,
+      required: [true, "Email field is required"],
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: "{VALUE} is not correct email format",
+      },
+    },
+    contactNo: {
+      type: String,
+      required: [true, "Contact No field is required"],
+    },
+    emergencyContactNo: {
+      type: String,
+      required: [true, "Emergency Contact no field is required"],
+    },
+    bloodGroup: {
+      type: String,
+      enum: {
+        values: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        message:
+          'The gender field can only be one of the following:"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"',
+      },
+    },
+    presentAddress: {
+      type: String,
+      required: [true, "Present Address field is required"],
+    },
+    permanentAddress: {
+      type: String,
+      required: [true, "Permanent address field is required"],
+    },
+    guardian: {
+      type: guardianSchema,
+      required: [true, "guardian field is required"],
+    },
+    localGuardian: {
+      type: localGuardianSchema,
+      required: [true, "Local guardian field is required"],
+    },
+    admissionSemester: { type: Schema.Types.ObjectId, ref: "AcademicSemester" },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicDepartment",
+    },
+
+    profileImg: { type: String },
   },
-  presentAddress: {
-    type: String,
-    required: [true, "Present Address field is required"],
-  },
-  permanentAddress: {
-    type: String,
-    required: [true, "Permanent address field is required"],
-  },
-  guardian: {
-    type: guardianSchema,
-    required: [true, "guardian field is required"],
-  },
-  localGuardian: {
-    type: localGuardianSchema,
-    required: [true, "Local guardian field is required"],
-  },
-  admissionSemester: { type: Schema.Types.ObjectId, ref: "AcademicSemester" },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  academicDepartment: {
-    type: Schema.Types.ObjectId,
-    ref: "AcademicDepartment",
-  },
-  profileImg: { type: String },
-});
+  {
+    toJSON: {
+      virtuals: true,
+    },
+  }
+);
+
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
 
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);
