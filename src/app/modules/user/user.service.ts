@@ -8,7 +8,7 @@ import { TStudent } from "../student/student.interface";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 import { generatedStudentId } from "./user.utils";
-import AppError from "../../middlwares/AppError";
+import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
