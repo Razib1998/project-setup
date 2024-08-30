@@ -22,11 +22,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-// virtual
-// userSchema.virtual("fullName").get(function () {
-//   return this.name.firstName + this.name.middleName + this.name.lastName;
-// });
-
 // pre save middleware/ hook : will work on create()  save()
 userSchema.pre("save", async function (next) {
   // console.log(this, 'pre hook : we will save  data');
