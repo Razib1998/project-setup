@@ -2,11 +2,11 @@ import { RequestHandler } from "express";
 import sendResponse from "../../utils/senResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
-import { adminServices } from "./admin.service";
+import { AdminServices } from "./admin.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getAllAdmins: RequestHandler = catchAsync(async (req, res, next) => {
-  const result = await adminServices.getAllAdminsFromDB(req.query);
+  const result = await AdminServices.getAllAdminsFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -16,8 +16,8 @@ const getAllAdmins: RequestHandler = catchAsync(async (req, res, next) => {
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getSingleAdmin: RequestHandler = catchAsync(async (req, res, next) => {
-  const { adminId } = req.params;
-  const result = await adminServices.getSingleAdmin(adminId);
+  const { id } = req.params;
+  const result = await AdminServices.getSingleAdmin(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -27,9 +27,9 @@ const getSingleAdmin: RequestHandler = catchAsync(async (req, res, next) => {
 });
 
 const updateAdmin = catchAsync(async (req, res) => {
-  const { adminId } = req.params;
+  const { id } = req.params;
   const { admin } = req.body;
-  const result = await adminServices.updateAdminIntoDB(adminId, admin);
+  const result = await AdminServices.updateAdminIntoDB(id, admin);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -40,8 +40,8 @@ const updateAdmin = catchAsync(async (req, res) => {
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const deleteAdmin: RequestHandler = catchAsync(async (req, res, next) => {
-  const { adminId } = req.params;
-  const result = await adminServices.deleteAdmin(adminId);
+  const { id } = req.params;
+  const result = await AdminServices.deleteAdmin(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

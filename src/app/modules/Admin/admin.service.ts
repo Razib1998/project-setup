@@ -20,7 +20,7 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleAdmin = async (id: string) => {
-  const result = await Admin.findOne({ id });
+  const result = await Admin.findById(id);
   return result;
 };
 
@@ -36,7 +36,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
       modifiedUpdatedData[`name.${key}`] = value;
     }
   }
-  const result = await Admin.findOneAndUpdate({ id }, modifiedUpdatedData, {
+  const result = await Admin.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
     runValidators: true,
   });
@@ -47,8 +47,8 @@ const deleteAdmin = async (id: string) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const deletedAdmin = await Admin.findOneAndUpdate(
-      { id },
+    const deletedAdmin = await Admin.findByIdAndUpdate(
+      id,
       { isDeleted: true },
       { new: true, session }
     );
@@ -57,8 +57,10 @@ const deleteAdmin = async (id: string) => {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to delete Admin");
     }
 
-    const deletedUser = await User.findOneAndUpdate(
-      { id },
+    const userId = deletedAdmin.user;
+
+    const deletedUser = await User.findByIdAndUpdate(
+      userId,
       { isDeleted: true },
       { new: true, session }
     );
@@ -76,7 +78,7 @@ const deleteAdmin = async (id: string) => {
   return deleteAdmin;
 };
 
-export const adminServices = {
+export const AdminServices = {
   getAllAdminsFromDB,
   getSingleAdmin,
   deleteAdmin,

@@ -35,9 +35,9 @@ const getAllAcademicFaculty: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getSingleAcademicFaculty: RequestHandler = catchAsync(
   async (req, res, next) => {
-    const { facultyId } = req.params;
+    const { id } = req.params;
     const result =
-      await AcademicFacultyServices.getSingleAcademicFacultyFromDB(facultyId);
+      await AcademicFacultyServices.getSingleAcademicFacultyFromDB(id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -49,9 +49,9 @@ const getSingleAcademicFaculty: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updateAcademicFaculty: RequestHandler = catchAsync(
   async (req, res, next) => {
-    const { facultyId } = req.params;
+    const { id } = req.params;
     const result = await AcademicFacultyServices.updateAcademicFacultyIntoDB(
-      facultyId,
+      id,
       req.body
     );
     sendResponse(res, {

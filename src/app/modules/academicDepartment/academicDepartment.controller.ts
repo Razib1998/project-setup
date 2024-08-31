@@ -34,11 +34,9 @@ const getAllAcademicDepartments: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getSingleAcademicDepartment: RequestHandler = catchAsync(
   async (req, res, next) => {
-    const { departmentId } = req.params;
+    const { id } = req.params;
     const result =
-      await AcademicDepartmentServices.getSingleAcademicDepartmentFromDB(
-        departmentId
-      );
+      await AcademicDepartmentServices.getSingleAcademicDepartmentFromDB(id);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -50,10 +48,10 @@ const getSingleAcademicDepartment: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const updateAcademicDepartment: RequestHandler = catchAsync(
   async (req, res, next) => {
-    const { departmentId } = req.params;
+    const { id } = req.params;
     const result =
       await AcademicDepartmentServices.updateAcademicDepartmentIntoDB(
-        departmentId,
+        id,
         req.body
       );
     sendResponse(res, {
