@@ -9,8 +9,6 @@ import { Faculty } from "../Faculty/faculty.model";
 import { OfferedCourse } from "./offeredCourse.model";
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
-  // check if the semester Registration is Exists..
-
   const {
     semesterRegistration,
     academicDepartment,
