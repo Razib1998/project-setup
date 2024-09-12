@@ -6,6 +6,7 @@ import httpStatus from "http-status";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import { TUserRole } from "../user/user.interface";
+import { User } from "../user/user.model";
 
 declare global {
   namespace Express {
@@ -24,22 +25,47 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
-    jwt.verify(
+    const decoded = jwt.verify(
       token,
-      config.jwt_access_secret as string,
-      function (err, decoded) {
-        if (err) {
-          throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
-        }
+      config.jwt_access_secret as string
+    ) as JwtPayload;
 
-        const role = (decoded as JwtPayload).role;
+    const { role, userId, iat } = decoded;
 
-        if (requiredRoles && !requiredRoles.includes(role)) {
-          throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
-        }
-        req.user = decoded as JwtPayload;
-        next();
-      }
-    );
+    const user = await User.isUserExistsByCustomId(userId);
+    if (!user) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "User not exists");
+    }
+
+    const isDeleted = user?.isDeleted;
+
+    if (isDeleted) {
+      throw new AppError(httpStatus.FORBIDDEN, "This user is deleted !");
+    }
+
+    // checking if the user is blocked
+    const userStatus = user?.status;
+
+    if (userStatus === "blocked") {
+      throw new AppError(httpStatus.FORBIDDEN, "This user is blocked ! !");
+    }
+
+    if (
+      user.passwordChangedAt &&
+      User.isJWTIssuedBeforePasswordChanged(
+        user.passwordChangedAt,
+        iat as number
+      )
+    ) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized !");
+    }
+
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
+    }
+    req.user = decoded as JwtPayload;
+    next();
   });
+
+  // err
 };
