@@ -6,6 +6,8 @@ import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { RegistrationStatus } from "./semesterRegistration.constant";
 import { TSemesterRegistration } from "./semesterRegistration.interface";
 import { SemesterRegistration } from "./semesterRegistration.model";
+import { OfferedCourse } from "../OfferedCourse/offeredCourse.model";
+import mongoose from "mongoose";
 
 const createSemesterRegistrationIntoDB = async (
   payload: TSemesterRegistration
@@ -140,9 +142,69 @@ const updateSemesterRegistrationIntoDB = async (
   return result;
 };
 
+const deleteSemesterRegistration = async (id: string) => {
+  // First check if the semester registration is available..
+
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id);
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "This semester Registration is not available"
+    );
+  }
+
+  // check semester registration status..
+
+  const semesterRegistrationStatus = isSemesterRegistrationExists.status;
+
+  if (semesterRegistrationStatus !== "UPCOMING") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not update as the registered semester is ${semesterRegistrationStatus}`
+    );
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+    // Delete the associated offered course
+
+    const deletedOfferedCourse = await OfferedCourse.deleteMany(
+      {
+        semesterRegistration: id,
+      },
+      { session }
+    );
+
+    if (!deletedOfferedCourse) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Failed to delete offered course"
+      );
+    }
+
+    // Now delete the semester Registration
+
+    const result = await SemesterRegistration.findByIdAndDelete(id, {
+      new: true,
+      session,
+    });
+
+    await session.commitTransaction();
+    await session.endSession();
+    return result;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
+};
+
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationsFromDB,
   getSingleSemesterRegistrationsFromDB,
   updateSemesterRegistrationIntoDB,
+  deleteSemesterRegistration,
 };

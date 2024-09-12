@@ -1,11 +1,10 @@
-import { RequestHandler } from "express";
 import sendResponse from "../../utils/senResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import { facultyServices } from "./faculty.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getAllFaculties: RequestHandler = catchAsync(async (req, res, next) => {
+const getAllFaculties = catchAsync(async (req, res, next) => {
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -15,7 +14,7 @@ const getAllFaculties: RequestHandler = catchAsync(async (req, res, next) => {
   });
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getSingleFaculty: RequestHandler = catchAsync(async (req, res, next) => {
+const getSingleFaculty = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const result = await facultyServices.getSingleFaculty(id);
   sendResponse(res, {
@@ -39,7 +38,7 @@ const updateFaculty = catchAsync(async (req, res) => {
   });
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const deleteFaculty: RequestHandler = catchAsync(async (req, res, next) => {
+const deleteFaculty = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const result = await facultyServices.deleteFaculty(id);
   sendResponse(res, {
