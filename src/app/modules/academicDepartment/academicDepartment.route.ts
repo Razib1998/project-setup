@@ -3,6 +3,7 @@ import { validateRequest } from "../../middlwares/validateRequest";
 import { AcademicDepartmentValidation } from "./academicDepartment.validation";
 import { AcademicDepartmentControllers } from "./academicDepartment.controller";
 import { auth } from "../Auth/auth";
+import { USER_ROlE } from "../user/user.constant";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.post(
 );
 router.get(
   "/",
-  auth(),
+  auth(USER_ROlE.admin),
   AcademicDepartmentControllers.getAllAcademicDepartments
 );
 

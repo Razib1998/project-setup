@@ -18,7 +18,11 @@ declare global {
 
 export const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const token = (req.headers.authorization as string).split(" ")[1];
+    // const tokenWithoutBearer = token.startsWith("Bearer ")
+    //   ? token.split(" ")[1]
+    //   : token;
+    // console.log(tokenWithoutBearer);
     // check if the token is not given..
 
     if (!token) {

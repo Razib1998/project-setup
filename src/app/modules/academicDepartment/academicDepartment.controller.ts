@@ -21,7 +21,6 @@ const createAcademicDepartment: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getAllAcademicDepartments: RequestHandler = catchAsync(
   async (req, res, next) => {
-    console.log("test", req.user);
     const result =
       await AcademicDepartmentServices.getAllAcademicDepartmentsFromDB();
     sendResponse(res, {

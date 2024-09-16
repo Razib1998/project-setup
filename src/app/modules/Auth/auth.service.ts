@@ -51,8 +51,10 @@ const loginUser = async (payload: TLoginUser) => {
     expiresIn: "20d",
   });
 
+  const tokenWithBearer = `Bearer ${accessToken}`;
+
   return {
-    accessToken,
+    tokenWithBearer,
     needsPasswordChange: user?.needPasswordChange,
   };
 };
