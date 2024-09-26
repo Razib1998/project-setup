@@ -18,5 +18,10 @@ router.post(
   validateRequest(AuthValidation.changePasswordValidationSchema),
   AuthUserControllers.changePassword
 );
+router.post(
+  "/refresh-token",
+  validateRequest(AuthValidation.refreshTokenValidationSchema),
+  AuthUserControllers.refreshToken
+);
 
 export const AuthRoutes = router;

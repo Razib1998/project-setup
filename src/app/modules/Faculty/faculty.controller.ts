@@ -5,6 +5,7 @@ import { facultyServices } from "./faculty.service";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getAllFaculties = catchAsync(async (req, res, next) => {
+  console.log(req.cookies);
   const result = await facultyServices.getAllFacultiesFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,

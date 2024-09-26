@@ -4,6 +4,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/senResponse";
 import { AuthUserServices } from "./auth.service";
 import { JwtPayload } from "jsonwebtoken";
+import config from "../../config";
 
 declare global {
   namespace Express {
@@ -15,11 +16,21 @@ declare global {
 
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthUserServices.loginUser(req.body);
+
+  const { refreshToken, tokenWithBearer, needsPasswordChange } = result;
+
+  res.cookie("refreshToken", refreshToken, {
+    secure: config.node_env === "production",
+    httpOnly: true,
+  });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "User login Successfully",
-    data: result,
+    data: {
+      tokenWithBearer,
+      needsPasswordChange,
+    },
   });
 });
 const changePassword = catchAsync(async (req, res) => {
@@ -33,7 +44,19 @@ const changePassword = catchAsync(async (req, res) => {
   });
 });
 
+const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const result = await AuthUserServices.refreshToken(refreshToken);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Access token is retrieved succesfully!",
+    data: result,
+  });
+});
+
 export const AuthUserControllers = {
   loginUser,
   changePassword,
+  refreshToken,
 };
