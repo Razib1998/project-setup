@@ -4,6 +4,8 @@ import { UserServices } from "./user.service";
 import sendResponse from "../../utils/senResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
+import { get } from "http";
+import AppError from "../../errors/AppError";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
@@ -46,14 +48,16 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
-const getSingleUser: RequestHandler = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-
-  const result = await UserServices.getSingUserFromDB(id);
+const getMe: RequestHandler = catchAsync(async (req, res, next) => {
+  const token = (req.headers.authorization as string).split(" ")[1];
+  if (!token) {
+    throw new AppError(httpStatus.NOT_FOUND, "You are not Authorized");
+  }
+  const result = await UserServices.getMe(token);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "single user retrieved Successfully",
+    message: "user is Retrieved Successfully",
     data: result,
   });
 });
@@ -63,5 +67,5 @@ export const UserControllers = {
   createFaculty,
   createAdmin,
   getAllUsers,
-  getSingleUser,
+  getMe,
 };

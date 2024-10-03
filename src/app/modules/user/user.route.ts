@@ -18,16 +18,17 @@ router.post(
 );
 router.post(
   "/create-faculty",
+  auth(USER_ROlE.admin),
   validateRequest(createFacultyValidationSchema),
   UserControllers.createFaculty
 );
 router.post(
   "/create-admin",
+  auth(USER_ROlE.admin),
   validateRequest(createAdminValidationSchema),
   UserControllers.createAdmin
 );
-router.get("/", UserControllers.getSingleUser);
 
-router.get("/id", UserControllers.getSingleUser);
+router.get("/me", UserControllers.getMe);
 
 export const UserRoutes = router;
