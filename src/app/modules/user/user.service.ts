@@ -21,8 +21,13 @@ import { Faculty } from "../Faculty/faculty.model";
 import { TAdmin } from "../Admin/admin.interface";
 import { Admin } from "../Admin/admin.model";
 import { verifyToken } from "../Auth/auth.utils";
+import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary";
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: TStudent
+) => {
   // create a user object
   const userData: Partial<TUser> = {};
 
@@ -46,15 +51,26 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
       admissionSemester as TAcademicSemester
     );
 
+    // send Image zo cloudinary.
+
+    const imageName = `${userData.id}${payload.name.firstName}`;
+
+    const path = file?.path;
+
+    const { secure_url } = (await sendImageToCloudinary(imageName, path)) as {
+      secure_url: string;
+    };
+
     // create a user( transaction-1)
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create a user");
     }
 
-    // set id , _id as user
+    // set id , _id as user and profile image
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
+    payload.profileImg = secure_url;
 
     // Create a student(transaction-2)
     const newStudent = await Student.create([payload], { session });
@@ -168,6 +184,18 @@ const getAllUsersFromDB = async () => {
   const result = await User.find();
   return result;
 };
+
+const changeStatus = async (id: string, payload: { status: string }) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+  const result = await User.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
+
 const getMe = async (token: string) => {
   const decoded = verifyToken(token, config.jwt_access_secret as string);
 
@@ -192,4 +220,5 @@ export const UserServices = {
   createAdminIntoDB,
   getAllUsersFromDB,
   getMe,
+  changeStatus,
 };

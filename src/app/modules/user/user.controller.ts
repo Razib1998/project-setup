@@ -10,8 +10,11 @@ import AppError from "../../errors/AppError";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createStudent: RequestHandler = catchAsync(async (req, res, next) => {
   const { password, student: studentData } = req.body;
-
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+  const result = await UserServices.createStudentIntoDB(
+    req.file,
+    password,
+    studentData
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -61,6 +64,16 @@ const getMe: RequestHandler = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const changeStatus: RequestHandler = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const result = await UserServices.changeStatus(id, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User status updated Successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createStudent,
@@ -68,4 +81,5 @@ export const UserControllers = {
   createAdmin,
   getAllUsers,
   getMe,
+  changeStatus,
 };
