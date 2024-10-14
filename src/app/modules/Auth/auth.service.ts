@@ -60,10 +60,8 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_refresh_expires_in as string
   );
 
-  const tokenWithBearer = `Bearer ${accessToken}`;
-
   return {
-    tokenWithBearer,
+    accessToken,
     refreshToken,
     needsPasswordChange: user?.needPasswordChange,
   };
@@ -165,9 +163,8 @@ const refreshToken = async (token: string) => {
     config.jwt_access_expires_in as string
   );
 
-  const tokenWithBearer = `Bearer ${accessToken}`;
   return {
-    tokenWithBearer,
+    accessToken,
   };
 };
 

@@ -18,7 +18,7 @@ declare global {
 
 export const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = (req.headers.authorization as string).split(" ")[1];
+    const token = req.headers.authorization as string;
     // const tokenWithoutBearer = token.startsWith("Bearer ")
     //   ? token.split(" ")[1]
     //   : token;
@@ -29,10 +29,15 @@ export const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
-    const decoded = jwt.verify(
-      token,
-      config.jwt_access_secret as string
-    ) as JwtPayload;
+    let decoded;
+    try {
+      decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string
+      ) as JwtPayload;
+    } catch (err) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
+    }
 
     const { role, userId, iat } = decoded;
 

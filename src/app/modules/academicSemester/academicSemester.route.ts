@@ -2,6 +2,7 @@ import express from "express";
 import { AcademicSemesterControllers } from "./academicSemester.controller";
 import { validateRequest } from "../../middlwares/validateRequest";
 import { academicSemesterValidations } from "./academicSemester.validation";
+import { auth } from "../Auth/auth";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.patch(
   ),
   AcademicSemesterControllers.updateAcademicSemester
 );
-router.get("/", AcademicSemesterControllers.getAllSemesters);
+router.get("/", auth("admin"), AcademicSemesterControllers.getAllSemesters);
 router.get("/:semesterId", AcademicSemesterControllers.getSemesterById);
 
 export const AcademicSemesterRoutes = router;
