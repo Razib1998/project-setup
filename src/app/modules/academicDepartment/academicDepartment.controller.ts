@@ -26,7 +26,7 @@ const getAllAcademicDepartments: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "Academic Faculties are retrieved Successfully!",
+      message: "Academic Departments are retrieved Successfully!",
       data: result,
     });
   }
