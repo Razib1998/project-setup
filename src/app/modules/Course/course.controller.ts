@@ -76,6 +76,18 @@ const assignFacultiesWithCourseIntoDB: RequestHandler = catchAsync(
     });
   }
 );
+const getFacultiesWithCourse = catchAsync(async (req, res) => {
+  const { courseId } = req.params;
+
+  const result = await CourseServices.getFacultiesWithCourseFromDB(courseId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Faculties retrieved succesfully",
+    data: result,
+  });
+});
 const removeFacultiesWithCourseFromDB: RequestHandler = catchAsync(
   async (req, res, next) => {
     const { courseId } = req.params;
@@ -101,4 +113,5 @@ export const CourseControllers = {
   updateCourse,
   assignFacultiesWithCourseIntoDB,
   removeFacultiesWithCourseFromDB,
+  getFacultiesWithCourse,
 };

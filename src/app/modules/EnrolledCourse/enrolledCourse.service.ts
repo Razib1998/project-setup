@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { OfferedCourse } from "../OfferedCourse/offeredCourse.model";
 import { TEnrolledCourse } from "./enrolledCourse.interface";
 import { EnrolledCourse } from "./enrolledCourse.model";
 import { Student } from "../student/student-model";
+import mongoose from "mongoose";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -33,7 +35,48 @@ const createEnrolledCourseIntoDB = async (
   if (isStudentAlreadyEnrolled) {
     throw new AppError(httpStatus.CONFLICT, "Student is already enrolled..!");
   }
-  return null;
+
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const result = await EnrolledCourse.create(
+      [
+        {
+          semesterRegistration: isOfferedCourseExists?.semesterRegistration,
+          academicSemester: isOfferedCourseExists?.academicSemester,
+          academicFaculty: isOfferedCourseExists?.academicFaculty,
+          academicDepartment: isOfferedCourseExists?.academicDepartment,
+          offeredCourse: offeredCourse,
+          course: isOfferedCourseExists?.course,
+          student: student?._id,
+          faculty: isOfferedCourseExists?.faculty,
+          isEnrolled: true,
+        },
+      ],
+      { session }
+    );
+
+    if (!result) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Failed to enrolled this course..!"
+      );
+    }
+
+    const maxCapacity = isOfferedCourseExists?.maxCapacity;
+
+    await OfferedCourse.findByIdAndUpdate(offeredCourse, {
+      maxCapacity: maxCapacity - 1,
+    });
+    await session.commitTransaction();
+    await session.endSession();
+    return result;
+  } catch (err: any) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(err);
+  }
 };
 
 export const EnrolledCourseServices = {
