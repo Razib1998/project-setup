@@ -19,7 +19,7 @@ export type TEnrolledCourse = {
   student: Types.ObjectId;
   faculty: Types.ObjectId;
   isEnrolled: boolean;
-  courseMarks: TEnrolledCourse;
+  courseMarks: TEnrolledCourseMarks;
   grade: TGrade;
   gradePoints: number;
   isCompleted: boolean;
