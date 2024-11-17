@@ -85,6 +85,7 @@ const enrolledCourseSchema = new Schema<TEnrolledCourse>(
     grade: {
       type: String,
       enum: Grade,
+      default: "NA",
     },
     isCompleted: {
       type: Boolean,
