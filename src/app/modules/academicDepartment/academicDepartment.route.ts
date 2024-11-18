@@ -9,14 +9,15 @@ const router = express.Router();
 
 router.post(
   "/create-academic-department",
-  // validateRequest(
-  //   AcademicDepartmentValidation.createAcademicDepartmentValidationSchema
-  // ),
+  auth(USER_ROlE.admin, USER_ROlE.superAdmin),
+  validateRequest(
+    AcademicDepartmentValidation.createAcademicDepartmentValidationSchema
+  ),
   AcademicDepartmentControllers.createAcademicDepartment
 );
 router.get(
   "/",
-  auth(USER_ROlE.admin),
+  auth(USER_ROlE.admin, USER_ROlE.superAdmin),
   AcademicDepartmentControllers.getAllAcademicDepartments
 );
 

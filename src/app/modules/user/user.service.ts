@@ -42,6 +42,22 @@ const createStudentIntoDB = async (
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester
   );
+
+  if (!admissionSemester) {
+    throw new AppError(httpStatus.NOT_FOUND, "Admission Semester not found");
+  }
+
+  // find academic Department,
+
+  const academicDepartment = await AcademicDepartment.findById(
+    payload.academicDepartment
+  );
+
+  if (!academicDepartment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic Department not found");
+  }
+  payload.academicFaculty = academicDepartment.academicFaculty;
+
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -54,7 +70,10 @@ const createStudentIntoDB = async (
 
     // const imageName = `${userData.id}${payload.name.firstName}`;
 
-    const path = file?.path;
+    if (file) {
+      const path = file?.path;
+      payload.profileImg = path;
+    }
 
     // const { secure_url } = (await sendImageToCloudinary(imageName, path)) as {
     //   secure_url: string;
@@ -69,7 +88,6 @@ const createStudentIntoDB = async (
     // set id , _id as user and profile image
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
-    payload.profileImg = path;
 
     // Create a student(transaction-2)
     const newStudent = await Student.create([payload], { session });
@@ -109,6 +127,7 @@ const createFacultyIntoDB = async (
   if (!academicDepartment) {
     throw new AppError(404, "Academic department not fond");
   }
+  payload.academicFaculty = academicDepartment?.academicFaculty;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
@@ -123,12 +142,14 @@ const createFacultyIntoDB = async (
 
     // send Image to cloudinary.
 
-    const path = file?.path;
+    if (file) {
+      const path = file?.path;
+      payload.profileImg = path;
+    }
 
     // set id , _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
-    payload.profileImg = path;
 
     // Create a faculty(transaction-2)
     const newFaculty = await Faculty.create([payload], { session });
@@ -175,12 +196,14 @@ const createAdminIntoDB = async (
 
     // send Image to cloudinary.
 
-    const path = file?.path;
+    if (file) {
+      const path = file?.path;
+      payload.profileImg = path;
+    }
 
     // set id , _id as user
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
-    payload.profileImg = path;
 
     // Create an admin(transaction-2)
     const newAdmin = await Admin.create([payload], { session });

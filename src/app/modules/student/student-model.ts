@@ -140,8 +140,12 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>(
       type: Schema.Types.ObjectId,
       ref: "AcademicDepartment",
     },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicFaculty",
+    },
 
-    profileImg: { type: String },
+    profileImg: { type: String, default: "" },
   },
   {
     toJSON: {

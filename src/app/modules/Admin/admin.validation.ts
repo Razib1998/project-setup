@@ -29,7 +29,6 @@ export const createAdminValidationSchema = z.object({
   body: z.object({
     password: z.string().max(20),
     admin: z.object({
-      designation: z.string(),
       name: updateUserNameValidationSchema,
       gender: z.enum([...Gender] as [string, ...string[]]),
       dateOfBirth: z.string().optional(), // If date format is required, add .refine() to validate
@@ -46,7 +45,6 @@ export const updateAdminValidationSchema = z.object({
   body: z.object({
     password: z.string().max(20).optional(),
     admin: z.object({
-      designation: z.string().optional(),
       name: createUserNameValidationSchema,
       gender: z.enum([...Gender] as [string, ...string[]]).optional(),
       dateOfBirth: z.string().optional(), // If date format is required, add .refine() to validate
