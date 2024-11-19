@@ -3,6 +3,7 @@ import { EnrolledCourseController } from "./enrolledCourse.controller";
 import { validateRequest } from "../../middlwares/validateRequest";
 import { EnrolledCourseValidation } from "./enrolledCourse.validation";
 import { auth } from "../Auth/auth";
+import { USER_ROlE } from "../user/user.constant";
 
 const router = express.Router();
 
@@ -13,6 +14,12 @@ router.post(
     EnrolledCourseValidation.createEnrolledCourseValidationSchema
   ),
   EnrolledCourseController.createEnrolledCourse
+);
+
+router.get(
+  "/my-enrolled-courses",
+  auth(USER_ROlE.student),
+  EnrolledCourseController.getMyEnrolledCourses
 );
 
 router.patch(

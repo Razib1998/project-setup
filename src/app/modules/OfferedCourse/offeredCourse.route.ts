@@ -15,14 +15,16 @@ router.post(
 );
 router.get(
   "/",
-  auth(
-    USER_ROlE.admin,
-    USER_ROlE.superAdmin,
-    USER_ROlE.faculty,
-    USER_ROlE.student
-  ),
+  auth(USER_ROlE.admin, USER_ROlE.superAdmin, USER_ROlE.faculty),
   OfferedCourseControllers.getAllOfferedCourses
 );
+
+router.get(
+  "/my-offered-courses",
+  auth(USER_ROlE.student),
+  OfferedCourseControllers.getMyOfferedCourses
+);
+
 router.get(
   "/:id",
   auth(

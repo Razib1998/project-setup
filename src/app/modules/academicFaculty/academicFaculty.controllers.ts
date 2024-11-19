@@ -22,13 +22,15 @@ const createAcademicFaculty: RequestHandler = catchAsync(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getAllAcademicFaculty: RequestHandler = catchAsync(
   async (req, res, next) => {
-    const result =
-      await AcademicFacultyServices.getAllAcademicFacultiesFromDB();
+    const result = await AcademicFacultyServices.getAllAcademicFacultiesFromDB(
+      req.query
+    );
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "Academic Faculties are retrieved Successfully!",
-      data: result,
+      meta: result.meta,
+      data: result.result,
     });
   }
 );

@@ -11,7 +11,8 @@ const getAllAdmins: RequestHandler = catchAsync(async (req, res, next) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Admins are retrieved Successfully!",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
