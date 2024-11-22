@@ -17,7 +17,7 @@ declare global {
 const loginUser = catchAsync(async (req, res) => {
   const result = await AuthUserServices.loginUser(req.body);
 
-  const { refreshToken, accessToken, needsPasswordChange } = result;
+  const { refreshToken, accessToken, needPasswordChange } = result;
 
   res.cookie("refreshToken", refreshToken, {
     secure: config.node_env === "production",
@@ -29,7 +29,7 @@ const loginUser = catchAsync(async (req, res) => {
     message: "User login Successfully",
     data: {
       accessToken,
-      needsPasswordChange,
+      needPasswordChange,
     },
   });
 });

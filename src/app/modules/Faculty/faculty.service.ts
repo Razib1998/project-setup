@@ -76,6 +76,7 @@ const deleteFaculty = async (id: string) => {
     }
     await session.commitTransaction();
     await session.endSession();
+    return deletedFaculty;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

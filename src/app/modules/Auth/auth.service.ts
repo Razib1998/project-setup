@@ -63,7 +63,7 @@ const loginUser = async (payload: TLoginUser) => {
   return {
     accessToken,
     refreshToken,
-    needsPasswordChange: user?.needPasswordChange,
+    needPasswordChange: user?.needPasswordChange,
   };
 };
 
@@ -111,7 +111,7 @@ const changePassword = async (
     },
     {
       password: newHashedPassword,
-      needsPasswordChange: false,
+      needPasswordChange: false,
       passwordChangedAt: new Date(),
     }
   );
@@ -249,7 +249,7 @@ const resetPassword = async (
     },
     {
       password: newHashedPassword,
-      needsPasswordChange: false,
+      needPasswordChange: false,
       passwordChangedAt: new Date(),
     }
   );
